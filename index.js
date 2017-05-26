@@ -1,14 +1,25 @@
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 8080));
 
-app.get('/', function(request, response) {
-  response.send('hello');
+var router = express.Router();
+
+router.use(function(req, res, next) {
+	console.log('Something is happening.');
+	next();
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+router.get('/', function(req, res) {
+	res.json({ message: 'working!' });	
 });
 
+router.route('/:value')
+	.put(function(req, res) {
+		res.json({ message: 'echo:' + req.params.value });	
+	});
 
+app.use('/api', router);
+
+app.listen(app.get('port'));
